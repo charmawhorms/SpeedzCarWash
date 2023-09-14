@@ -1,8 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SpeedzCarWashAPI.Models
+namespace SpeedzCarWashClient.Models
 {
     public class Booking
     {
@@ -33,7 +32,7 @@ namespace SpeedzCarWashAPI.Models
         public string VehicleColor { get; set; }
 
         [Required]
-        public string VehicleLicensePlateNumber { get; set;}
+        public string VehicleLicensePlateNumber { get; set; }
 
         [Required]
         public double Price { get; set; }
