@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedzCarWashClient", "SpeedzCarWashClient\SpeedzCarWashClient.csproj", "{07986631-7848-434F-B0DD-0843E6ED3C0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{220C9F27-8EEE-4BC7-A5DB-6F478FBF9549}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{220C9F27-8EEE-4BC7-A5DB-6F478FBF9549}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{220C9F27-8EEE-4BC7-A5DB-6F478FBF9549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07986631-7848-434F-B0DD-0843E6ED3C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07986631-7848-434F-B0DD-0843E6ED3C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07986631-7848-434F-B0DD-0843E6ED3C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07986631-7848-434F-B0DD-0843E6ED3C0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

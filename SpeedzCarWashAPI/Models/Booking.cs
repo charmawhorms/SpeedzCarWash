@@ -18,17 +18,21 @@ namespace SpeedzCarWashAPI.Models
         [Required]
         public string PhoneNumber { get; set; }
 
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required]
         public DateTime DateBooked { get; set; }
 
+        [Required]
         public string VehicleMake { get; set; }
 
+        [Required]
         public string VehicleModel { get; set; }
 
+        [Required]
         public string VehicleColor { get; set; }
 
+        [Required]
         public string VehicleLicensePlateNumber { get; set;}
 
 
