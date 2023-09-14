@@ -53,7 +53,7 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that updates a washer based on the id in the database
         [HttpPut]
-        public async Task<ActionResult<List<Washer>>> UpdateProduct(Washer washer)
+        public async Task<ActionResult<List<Washer>>> UpdateWasher(Washer washer)
         {
             var washerFromDb = await _db.Washers.FindAsync(washer.Id);
             if (washerFromDb == null)

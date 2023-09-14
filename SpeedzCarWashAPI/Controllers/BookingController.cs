@@ -30,7 +30,7 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that gets a single booking from the database
         [HttpGet("{id}")]
-        public async Task<ActionResult<Washer>> GetBooking(int id)
+        public async Task<ActionResult<Booking>> GetBooking(int id)
         {
             var booking = await _db.Bookings.FindAsync(id);
             if (booking == null)
