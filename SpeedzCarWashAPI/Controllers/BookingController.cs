@@ -90,5 +90,7 @@ namespace SpeedzCarWashAPI.Controllers
             _db.SaveChanges();
             return Ok(bookingFromDb);
         }
+
+
     }
 }
