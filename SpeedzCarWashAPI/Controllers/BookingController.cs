@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SpeedzCarWashAPI.Data;
 using SpeedzCarWashAPI.Models;
@@ -26,10 +27,24 @@ namespace SpeedzCarWashAPI.Controllers
             return Ok(await _db.Bookings.ToListAsync());
         }
 
+        [HttpGet]
+        public ActionResult<BookingVM> GetBookingVM()
+        {
+            BookingVM bookingVM = new BookingVM();
+            bookingVM.Booking = new Booking();
+            bookingVM.PaymentMethod = _db.PaymentMethods.Select(x => new SelectListItem()
+            {
+                Text = x.MethodName,
+                Value = x.Id.ToString()
+            }).ToList();
+
+            return Ok(bookingVM);
+        }
 
 
-        //Method that gets a single booking from the database
         [HttpGet("{id}")]
+        //Method that gets a single booking from the database
+
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
             var booking = await _db.Bookings.FindAsync(id);
@@ -37,6 +52,24 @@ namespace SpeedzCarWashAPI.Controllers
                 return BadRequest("Booking not found");
             return Ok(booking);
         }
+
+
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Booking>> GetBooking(int id)
+        //{
+        //    var booking = await _db.Bookings.FindAsync(id);
+        //    if (booking == null)
+        //        return BadRequest("Booking not found");
+
+        //    // Get a list of all payment methods.
+        //    var paymentMethods = await _db.PaymentMethods.ToListAsync();
+
+        //    // Create a dropdown list of payment methods.
+        //    var paymentMethodDropdownList = new SelectList(paymentMethods, "Id", "MethodName");
+
+        //    // Add the dropdown list of payment methods to the response.
+        //    return Ok(new { booking, paymentMethodDropdownList });
+        //}
 
 
 

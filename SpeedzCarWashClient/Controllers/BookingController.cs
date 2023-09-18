@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using SpeedzCarWashClient.Models;
+using System.Net.Http;
 using System.Text;
+using System.Net.Http.Json;
 
 namespace SpeedzCarWashClient.Controllers
 {
@@ -34,9 +36,19 @@ namespace SpeedzCarWashClient.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var paymentMethodsResponse = await _client.GetAsync(_client.BaseAddress);
+            if (!paymentMethodsResponse.IsSuccessStatusCode)
+            {
+                // Handle the error.
+                return BadRequest();
+            }
+
+            string json = await paymentMethodsResponse.Content.ReadAsStringAsync();
+            var paymentMethods = JsonSerializer.Deserialize<List<PaymentMethod>>(json);
+
+            return View(paymentMethods);
         }
 
         [HttpPost]
