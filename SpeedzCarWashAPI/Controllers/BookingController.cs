@@ -32,10 +32,16 @@ namespace SpeedzCarWashAPI.Controllers
         {
             BookingVM bookingVM = new BookingVM();
             bookingVM.Booking = new Booking();
-            bookingVM.PaymentMethod = _db.PaymentMethods.Select(x => new SelectListItem()
+            bookingVM.PaymentMethod = _db.PaymentMethods.Select(iquery => new SelectListItem()
             {
-                Text = x.MethodName,
-                Value = x.Id.ToString()
+                Text = iquery.MethodName,
+                Value = iquery.Id.ToString()
+            }).ToList();
+
+            bookingVM.Washer = _db.Washers.Select(iquery => new SelectListItem()
+            {
+                Text = $"{iquery.FirstName} {iquery.LastName}",
+                Value = iquery.Id.ToString()
             }).ToList();
 
             return Ok(bookingVM);

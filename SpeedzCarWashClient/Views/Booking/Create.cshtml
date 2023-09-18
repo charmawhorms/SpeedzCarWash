@@ -68,19 +68,22 @@
                 <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
             </div>*@
 
-            <div class="">
+            <div class="form-group">
                 <label asp-for="Booking.PaymentMethodId" class="control-label"></label>
                 <select asp-for="Booking.PaymentMethodId" asp-items="@Model.PaymentMethod" class="form-control">
                     <option selected disabled>--Select Payment Method--</option>
                 </select>
+                <span asp-validation-for="Booking.PaymentMethodId" class="text-danger"></span>
             </div>
 
-            @*<div class="form-group">
-                <label asp-for="WasherId" class="control-label"></label>
-                <input asp-for="WasherId" class="form-control" />
-                <span asp-validation-for="WasherId" class="text-danger"></span>
-            </div>
             <div class="form-group">
+                <label asp-for="Booking.WasherId" class="control-label"></label>
+                <select asp-for="Booking.WasherId" asp-items="@Model.Washer" class="form-control">
+                    <option selected disabled>--Select Washer--</option>
+                </select>
+                <span asp-validation-for="Booking.WasherId" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
                 <label asp-for="VehicleId" class="control-label"></label>
                 <input asp-for="VehicleId" class="form-control" />
                 <span asp-validation-for="VehicleId" class="text-danger"></span>
