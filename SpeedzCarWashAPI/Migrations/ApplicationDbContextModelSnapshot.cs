@@ -84,7 +84,7 @@ namespace SpeedzCarWashAPI.Migrations
 
                     b.HasIndex("WasherId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("SpeedzCarWashAPI.Models.PaymentMethod", b =>
@@ -101,7 +101,7 @@ namespace SpeedzCarWashAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("SpeedzCarWashAPI.Models.Vehicle", b =>
@@ -121,7 +121,7 @@ namespace SpeedzCarWashAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vehicles");
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("SpeedzCarWashAPI.Models.Washer", b =>
@@ -145,7 +145,7 @@ namespace SpeedzCarWashAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Washers");
+                    b.ToTable("Washers", (string)null);
                 });
 
             modelBuilder.Entity("SpeedzCarWashAPI.Models.Booking", b =>

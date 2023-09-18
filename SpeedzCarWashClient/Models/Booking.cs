@@ -51,6 +51,7 @@ namespace SpeedzCarWashClient.Models
 
         //Relationships
         public int? PaymentMethodId { get; set; }
+        [DisplayName("Last Name")]
         [ForeignKey("PaymentMethodId")]
         public virtual PaymentMethod? PaymentMethod { get; set; }
 

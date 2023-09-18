@@ -44,6 +44,12 @@ namespace SpeedzCarWashAPI.Controllers
                 Value = iquery.Id.ToString()
             }).ToList();
 
+            bookingVM.Vehicle = _db.Vehicles.Select(iquery => new SelectListItem()
+            {
+                Text = iquery.VehicleType,
+                Value = iquery.Id.ToString()
+            }).ToList();
+
             return Ok(bookingVM);
         }
 
