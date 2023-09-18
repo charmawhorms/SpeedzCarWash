@@ -27,7 +27,7 @@ namespace SpeedzCarWashAPI.Controllers
             return Ok(await _db.Bookings.ToListAsync());
         }
 
-        [HttpGet]
+        [HttpGet("Upsert")]
         public ActionResult<BookingVM> GetBookingVM()
         {
             BookingVM bookingVM = new BookingVM();

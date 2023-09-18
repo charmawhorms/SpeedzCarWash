@@ -30,25 +30,22 @@ namespace SpeedzCarWashClient.Controllers
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                bookingList = JsonConvert.DeserializeObject<List<Booking>>(data);
+                bookingList = JsonConvert.DeserializeObject<List<Booking>>(data)!;
             }
             return View(bookingList);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public ActionResult Create()
         {
-            var paymentMethodsResponse = await _client.GetAsync(_client.BaseAddress);
-            if (!paymentMethodsResponse.IsSuccessStatusCode)
+            BookingVM bookingVM = new BookingVM();
+            var response = _client.GetAsync($"{_client.BaseAddress}/Upsert").Result;
+            if (response.IsSuccessStatusCode)
             {
-                // Handle the error.
-                return BadRequest();
+                string data = response.Content?.ReadAsStringAsync().Result;
+                bookingVM = JsonConvert.DeserializeObject<BookingVM>(data);
             }
-
-            string json = await paymentMethodsResponse.Content.ReadAsStringAsync();
-            var paymentMethods = JsonSerializer.Deserialize<List<PaymentMethod>>(json);
-
-            return View(paymentMethods);
+            return View(bookingVM);
         }
 
         [HttpPost]

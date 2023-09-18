@@ -27,7 +27,7 @@ namespace SpeedzCarWashClient.Controllers
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                washerList = JsonConvert.DeserializeObject<List<Washer>>(data);
+                washerList = JsonConvert.DeserializeObject<List<Washer>>(data)!;
             }
             return View(washerList);
         }
