@@ -38,77 +38,130 @@ namespace SpeedzCarWashClient.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            BookingVM bookingVM = new BookingVM();
-            var response = _client.GetAsync($"{_client.BaseAddress}/Upsert").Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                string data = response.Content?.ReadAsStringAsync().Result;
-                bookingVM = JsonConvert.DeserializeObject<BookingVM>(data);
+                BookingVM bookingVM = new BookingVM();
+                var response = _client.GetAsync($"{_client.BaseAddress}/Upsert").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string data = response.Content?.ReadAsStringAsync().Result!;
+                    bookingVM = JsonConvert.DeserializeObject<BookingVM>(data)!;
+                }
+                return View(bookingVM);
             }
-            return View(bookingVM);
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
+                return View();
+            }
         }
 
+        //[HttpPost]
+        //public IActionResult Create(Booking model)
+        //{
+        //    try
+        //    {
+        //        string data = JsonConvert.SerializeObject(model);
+        //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+        //        HttpResponseMessage response = _client.PostAsync(_client.BaseAddress, content).Result;
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            Console.WriteLine("Post successful");
+        //            TempData["successMessage"] = "Booking Created";
+        //            return RedirectToAction("Index");
+        //        }
+
+        //        return View();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["errorMessage"] = ex.Message;
+        //        return View();
+        //    }
+        //}
         [HttpPost]
-        public IActionResult Create(Booking model)
+        public async Task<IActionResult> Create(BookingVM model)
         {
             try
             {
-                string data = JsonConvert.SerializeObject(model);
+                string data = JsonConvert.SerializeObject(model.Booking);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _client.PostAsync(_client.BaseAddress, content).Result;
+                HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress, content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     TempData["successMessage"] = "Booking Created";
                     return RedirectToAction("Index");
                 }
+                else
+                {
+                    throw new Exception($"Status code: {response.StatusCode}");
+                }
             }
             catch (Exception ex)
             {
                 TempData["errorMessage"] = ex.Message;
                 return View();
             }
-
-            return View();
         }
+
+
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            try
+            if (ModelState.IsValid)
             {
-                Booking booking = new Booking();
-                HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/" + id.ToString()).Result;
-
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    string data = response.Content.ReadAsStringAsync().Result;
-                    booking = JsonConvert.DeserializeObject<Booking>(data);
+
+                    BookingVM bookingVM = new BookingVM();
+
+                    //Another way to write the below
+                    //HttpResponseMessage response = _client.GetAsync($"{_client.BaseAddress}/{id}").Result;
+                    HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/" + id.ToString()).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string data = response.Content.ReadAsStringAsync().Result;
+                        bookingVM = JsonConvert.DeserializeObject<BookingVM>(data);
+
+                        ViewBag.PaymentMethod = bookingVM.PaymentMethod;
+                        ViewBag.Washer = bookingVM.Washer;
+                        ViewBag.Vehicle = bookingVM.Vehicle;
+                    }
+                    return View(bookingVM);
                 }
-                return View(booking);
+                catch (Exception ex)
+                {
+                    TempData["errorMessage"] = ex.Message;
+                    return View();
+                }
             }
-            catch (Exception ex)
-            {
-                TempData["errorMessage"] = ex.Message;
-                return View();
-            }
-
-
+            return View();
         }
 
+
         [HttpPost]
-        public IActionResult Edit(Booking model)
+        public async Task<IActionResult> Edit(BookingVM model)
         {
             try
             {
-                string data = JsonConvert.SerializeObject(model);
+                //Booking myBooking   = new Booking();
+                //myBooking.PaymentMethodId = model.
+                string data = JsonConvert.SerializeObject(model.Booking);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _client.PutAsync(_client.BaseAddress, content).Result;
+                HttpResponseMessage response = await _client.PutAsync(_client.BaseAddress + "/" + model.Booking.Id.ToString(), content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["successMessage"] = "Booking details updated";
+                    TempData["successMessage"] = "Booking Updated";
                     return RedirectToAction("Index");
+                }
+                else
+                {
+                    throw new Exception($"Status code: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
@@ -116,8 +169,6 @@ namespace SpeedzCarWashClient.Controllers
                 TempData["errorMessage"] = ex.Message;
                 return View();
             }
-
-            return View();
         }
 
         [HttpGet]

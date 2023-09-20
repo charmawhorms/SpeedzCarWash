@@ -27,6 +27,9 @@ namespace SpeedzCarWashAPI.Controllers
             return Ok(await _db.Bookings.ToListAsync());
         }
 
+
+
+        //Method that gets all the dropdown lists
         [HttpGet("Upsert")]
         public ActionResult<BookingVM> GetBookingVM()
         {
@@ -57,31 +60,31 @@ namespace SpeedzCarWashAPI.Controllers
         [HttpGet("{id}")]
         //Method that gets a single booking from the database
 
-        public async Task<ActionResult<Booking>> GetBooking(int id)
+        public async Task<ActionResult<BookingVM>> GetBooking(int id)
         {
-            var booking = await _db.Bookings.FindAsync(id);
-            if (booking == null)
-                return BadRequest("Booking not found");
-            return Ok(booking);
+            BookingVM bookingVM = new BookingVM();
+            bookingVM.Booking = await _db.Bookings.FindAsync(id);
+
+            bookingVM.PaymentMethod = _db.PaymentMethods.Select(iquery => new SelectListItem()
+            {
+                Text = iquery.MethodName,
+                Value = iquery.Id.ToString()
+            }).ToList();
+
+            bookingVM.Washer = _db.Washers.Select(iquery => new SelectListItem()
+            {
+                Text = $"{iquery.FirstName} {iquery.LastName}",
+                Value = iquery.Id.ToString()
+            }).ToList();
+
+            bookingVM.Vehicle = _db.Vehicles.Select(iquery => new SelectListItem()
+            {
+                Text = iquery.VehicleType,
+                Value = iquery.Id.ToString()
+            }).ToList();
+
+            return Ok(bookingVM);
         }
-
-
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Booking>> GetBooking(int id)
-        //{
-        //    var booking = await _db.Bookings.FindAsync(id);
-        //    if (booking == null)
-        //        return BadRequest("Booking not found");
-
-        //    // Get a list of all payment methods.
-        //    var paymentMethods = await _db.PaymentMethods.ToListAsync();
-
-        //    // Create a dropdown list of payment methods.
-        //    var paymentMethodDropdownList = new SelectList(paymentMethods, "Id", "MethodName");
-
-        //    // Add the dropdown list of payment methods to the response.
-        //    return Ok(new { booking, paymentMethodDropdownList });
-        //}
 
 
 
@@ -97,28 +100,28 @@ namespace SpeedzCarWashAPI.Controllers
 
 
         //Method that updates a booking based on the id in the database
-        [HttpPut]
-        public async Task<ActionResult<List<Booking>>> UpdateBooking(Booking booking)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<List<BookingVM>>> UpdateBooking(int id, BookingVM bookingVM)
         {
-            var bookingFromDb = await _db.Bookings.FindAsync(booking);
+            var bookingFromDb = await _db.Bookings.FindAsync(id);
             if (bookingFromDb == null)
                 return BadRequest("Booking not found");
 
-            bookingFromDb.CustomerFirstName = booking.CustomerLastName;
-            bookingFromDb.CustomerLastName = booking.CustomerLastName;
-            bookingFromDb.PhoneNumber = booking.PhoneNumber;
-            bookingFromDb.Email = booking.Email;
-            bookingFromDb.DateBooked = booking.DateBooked;
-            bookingFromDb.VehicleMake = booking.VehicleMake;
-            bookingFromDb.VehicleModel = booking.VehicleModel;
-            bookingFromDb.VehicleColor = booking.VehicleColor;
-            bookingFromDb.VehicleLicensePlateNumber = booking.VehicleLicensePlateNumber;
-            bookingFromDb.PaymentMethodId = booking.PaymentMethodId;
-            bookingFromDb.WasherId = booking.WasherId;
-            bookingFromDb.VehicleId = booking.VehicleId;
+            bookingFromDb.CustomerFirstName = bookingVM.Booking.CustomerFirstName;
+            bookingFromDb.CustomerLastName = bookingVM.Booking.CustomerFirstName;
+            bookingFromDb.PhoneNumber = bookingVM.Booking.PhoneNumber;
+            bookingFromDb.Email = bookingVM.Booking.Email;
+            bookingFromDb.DateBooked = bookingVM.Booking.DateBooked;
+            bookingFromDb.VehicleMake = bookingVM.Booking.VehicleMake;
+            bookingFromDb.VehicleModel = bookingVM.Booking.VehicleModel;
+            bookingFromDb.VehicleColor = bookingVM.Booking.VehicleColor;
+            bookingFromDb.VehicleLicensePlateNumber = bookingVM.Booking.VehicleLicensePlateNumber;
+            bookingFromDb.PaymentMethodId = bookingVM.Booking.PaymentMethodId;
+            bookingFromDb.WasherId = bookingVM.Booking.WasherId;
+            bookingFromDb.VehicleId = bookingVM.Booking.VehicleId;
 
             await _db.SaveChangesAsync();
-            return Ok(await _db.Bookings.ToListAsync());
+            return Ok(bookingFromDb);
         }
 
 
