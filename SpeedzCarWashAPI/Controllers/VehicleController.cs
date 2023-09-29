@@ -21,20 +21,29 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that gets all the vehicles from the database
         [HttpGet]
-        public async Task<ActionResult<List<Vehicle>>> GetVehicles()
+        public IActionResult GetVehicles()
         {
-            return Ok(await _db.Vehicles.ToListAsync());
+            var vehicles = _db.Vehicles.ToList();
+            if (vehicles == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(vehicles);
         }
 
 
 
         //Method that gets a single vehicle from the database
         [HttpGet("{id}")]
-        public async Task<ActionResult<Vehicle>> GetVehicle(int id)
+        public IActionResult GetVehicleById(int id)
         {
-            var vehicle = await _db.Vehicles.FindAsync(id);
+            var vehicle = _db.Vehicles.FirstOrDefault(x => x.Id == id);
             if (vehicle == null)
-                return BadRequest("Vehicle not found");
+            {
+                return NotFound("Vehicle not found");
+            }
+                
             return Ok(vehicle);
         }
 
@@ -42,42 +51,43 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that post vehicles to the database
         [HttpPost]
-        public async Task<ActionResult<List<Vehicle>>> PostVehicles(Vehicle vehicle)
+        public IActionResult PostVehicles(Vehicle vehicle)
         {
             _db.Vehicles.Add(vehicle);
-            await _db.SaveChangesAsync();
-            return Ok(await _db.Vehicles.ToListAsync());
+            _db.SaveChanges();
+            return CreatedAtAction(nameof(GetVehicleById), new { id = vehicle.Id }, vehicle);
         }
 
 
 
         //Method that updates a vehicle based on the id in the database
-        [HttpPut]
-        public async Task<ActionResult<List<Vehicle>>> UpdateVehicle(Vehicle vehicle)
+        [HttpPut("{id}")]
+        public IActionResult UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
-            var vehicleFromDb = await _db.Vehicles.FindAsync(vehicle.Id);
-            if (vehicleFromDb == null)
-                return BadRequest("Vehicle not found");
+            if (id != vehicle.Id)
+            {
+                return NotFound();
+            }
 
-            vehicleFromDb.VehicleType = vehicle.VehicleType;
-            vehicleFromDb.Price = vehicle.Price;
-
-            await _db.SaveChangesAsync();
-            return Ok(await _db.Vehicles.ToListAsync());
+            _db.SaveChanges();
+            return CreatedAtAction(nameof(GetVehicleById), new { id = vehicle.Id }, vehicle);
         }
 
 
 
         //Method that deletes a vehicle based on the id from the database
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<Vehicle>>> DeleteVehicle(int id)
+        public IActionResult DeleteVehicle(int id)
         {
-            var vehicleFromDb = await _db.Vehicles.FindAsync(id);
+            var vehicleFromDb = _db.Vehicles.FirstOrDefault(x => x.Id == id);
             if (vehicleFromDb == null)
-                return BadRequest("Vehicle not found");
+            {
+                return NotFound();
+            }
 
             _db.Vehicles.Remove(vehicleFromDb);
             _db.SaveChanges();
+
             return Ok(vehicleFromDb);
         }
     }
