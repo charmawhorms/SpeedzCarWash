@@ -139,6 +139,10 @@ namespace SpeedzCarWashClient.Controllers
                     return View();
                 }
             }
+            else
+            {
+                Console.WriteLine("Model not valid"); 
+            }
             return View();
         }
 

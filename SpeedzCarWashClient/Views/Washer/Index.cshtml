@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<SpeedzCarWashClient.Models.Washer>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Washers";
 }
 
-<h1>Index</h1>
+<h1>Washers</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-info" asp-action="Create">Add Washer</button>
+    @*<a asp-action="Create">Create New</a>*@
 </p>
 <table class="table">
     <thead>

@@ -103,22 +103,27 @@ namespace SpeedzCarWashAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<List<BookingVM>>> UpdateBooking(int id, BookingVM bookingVM)
         {
+
             var bookingFromDb = await _db.Bookings.FindAsync(id);
             if (bookingFromDb == null)
+            {
                 return BadRequest("Booking not found");
+            }
+                
 
             bookingFromDb.CustomerFirstName = bookingVM.Booking.CustomerFirstName;
             bookingFromDb.CustomerLastName = bookingVM.Booking.CustomerFirstName;
             bookingFromDb.PhoneNumber = bookingVM.Booking.PhoneNumber;
             bookingFromDb.Email = bookingVM.Booking.Email;
             bookingFromDb.DateBooked = bookingVM.Booking.DateBooked;
-            bookingFromDb.VehicleMake = bookingVM.Booking.VehicleMake;
+            //bookingFromDb.VehicleMake = bookingVM.Booking.VehicleMake;
             bookingFromDb.VehicleModel = bookingVM.Booking.VehicleModel;
             bookingFromDb.VehicleColor = bookingVM.Booking.VehicleColor;
             bookingFromDb.VehicleLicensePlateNumber = bookingVM.Booking.VehicleLicensePlateNumber;
-            bookingFromDb.PaymentMethodId = bookingVM.Booking.PaymentMethodId;
-            bookingFromDb.WasherId = bookingVM.Booking.WasherId;
-            bookingFromDb.VehicleId = bookingVM.Booking.VehicleId;
+            //bookingFromDb.PaymentMethodId = bookingVM.Booking.PaymentMethodId;
+            //bookingFromDb.WasherId = bookingVM.Booking.WasherId;
+            //bookingFromDb.VehicleId = bookingVM.Booking.VehicleId;
+
 
             await _db.SaveChangesAsync();
             return Ok(bookingFromDb);

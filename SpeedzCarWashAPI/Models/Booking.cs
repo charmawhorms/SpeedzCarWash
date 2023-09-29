@@ -28,10 +28,6 @@ namespace SpeedzCarWashAPI.Models
         public DateTime DateBooked { get; set; }
 
         [Required]
-        [DisplayName("Make")]
-        public string VehicleMake { get; set; }
-
-        [Required]
         [DisplayName("Model")]
         public string VehicleModel { get; set; }
 
@@ -50,19 +46,16 @@ namespace SpeedzCarWashAPI.Models
 
 
         //Relationships
-        public int? PaymentMethodId { get; set; }
         [ForeignKey("PaymentMethodId")]
         public virtual PaymentMethod? PaymentMethod { get; set; }
 
 
 
-        public int? WasherId { get; set; }
         [ForeignKey("WasherId")]
         public virtual Washer? Washer { get; set; }
 
 
 
-        public int? VehicleId { get; set; }
         [ForeignKey("VehicleId")]
         public virtual Vehicle? Vehicle { get; set; }
     }
