@@ -21,14 +21,14 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that gets all the payment methods from the database
         [HttpGet]
-        //public async Task<ActionResult<List<PaymentMethod>>> GetPaymentmethods()
-        //{
-        //    return Ok(await _db.PaymentMethods.ToListAsync());
-        //}
-
-        public async Task<ActionResult<List<PaymentMethod>>> GetPaymentMethods()
+        public IActionResult GetPaymentMethods()
         {
-            var paymentMethods = await _db.PaymentMethods.ToListAsync();
+            var paymentMethods = _db.PaymentMethods.ToList();
+            if (paymentMethods == null)
+            {
+                return NotFound();
+            }
+
             return Ok(paymentMethods);
         }
 
@@ -36,11 +36,14 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that gets a single payment method from the database
         [HttpGet("{id}")]
-        public async Task<ActionResult<PaymentMethod>> GetPaymentMethod(int id)
+        public IActionResult GetPaymentMethodById(int id)
         {
-            var paymentMethod = await _db.PaymentMethods.FindAsync(id);
+            var paymentMethod = _db.PaymentMethods.FirstOrDefault(x => x.Id == id);
             if (paymentMethod == null)
-                return BadRequest("Payment method not found");
+            {
+                return NotFound();
+            }
+
             return Ok(paymentMethod);
         }
 
@@ -48,41 +51,43 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that post payment methods to the database
         [HttpPost]
-        public async Task<ActionResult<List<PaymentMethod>>> PostPaymentMethods(PaymentMethod paymentmethod)
+        public IActionResult PostPaymentMethods(PaymentMethod paymentmethod)
         {
             _db.PaymentMethods.Add(paymentmethod);
-            await _db.SaveChangesAsync();
-            return Ok(await _db.PaymentMethods.ToListAsync());
+            _db.SaveChanges();
+            return CreatedAtAction(nameof(GetPaymentMethodById), new { id =  paymentmethod.Id }, paymentmethod);
         }
 
 
 
         //Method that updates a payment method based on the id in the database
-        [HttpPut]
-        public async Task<ActionResult<List<PaymentMethod>>> UpdatePaymentMethod(PaymentMethod paymentmethod)
+        [HttpPut("{id}")]
+        public IActionResult UpdatePaymentMethod(int id, [FromBody] PaymentMethod paymentmethod)
         {
-            var paymentmethodFromDb = await _db.PaymentMethods.FindAsync(paymentmethod);
-            if (paymentmethodFromDb == null)
-                return BadRequest("Payment method not found");
+            if (id != paymentmethod.Id)
+            {
+                return NotFound();
+            }
 
-            paymentmethodFromDb.MethodName = paymentmethod.MethodName;
-
-            await _db.SaveChangesAsync();
-            return Ok(await _db.PaymentMethods.ToListAsync());
+            _db.SaveChanges();
+            return CreatedAtAction(nameof(GetPaymentMethodById), new { id = paymentmethod.Id }, paymentmethod);
         }
 
 
 
         //Method that deletes a payment method based on the id from the database
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<PaymentMethod>>> DeletePaymentMethod(int id)
+        public IActionResult DeletePaymentMethod(int id)
         {
-            var paymentmethodFromDb = await _db.PaymentMethods.FindAsync(id);
+            var paymentmethodFromDb = _db.PaymentMethods.FirstOrDefault(x => x.Id == id);
             if (paymentmethodFromDb == null)
-                return BadRequest("Payment method not found");
+            {
+                return NotFound();
+            }
 
             _db.PaymentMethods.Remove(paymentmethodFromDb);
             _db.SaveChanges();
+
             return Ok(paymentmethodFromDb);
         }
     }
