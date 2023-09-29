@@ -21,20 +21,27 @@ namespace SpeedzCarWashAPI.Controllers
 
         //Method that gets all the washers from the database
         [HttpGet]
-        public async Task<ActionResult<List<Washer>>> GetWashers()
+        public IActionResult GetWashers()
         {
-            return Ok(await _db.Washers.ToListAsync());
+            var washers = _db.Washers.ToList();
+            if (washers == null)
+            {
+                return BadRequest();
+            }
+            return Ok(washers);
         }
 
 
 
         //Method that gets a single washer from the database
         [HttpGet("{id}")]
-        public async Task<ActionResult<Washer>> GetWasher(int id)
+        public IActionResult GetWasherById(int id)
         {
-            var washer = await _db.Washers.FindAsync(id);
+            var washer = _db.Washers.FirstOrDefault(x => x.Id == id);
             if (washer == null)
-                return BadRequest("Washer not found");
+            {
+                return NotFound("Washer not found");
+            }
             return Ok(washer);
         }
 
@@ -42,43 +49,45 @@ namespace SpeedzCarWashAPI.Controllers
         
         //Method that post washers to the database
         [HttpPost]
-        public async Task<ActionResult<List<Washer>>> PostWashers(Washer washer)
+        public IActionResult PostWashers(Washer washer)
         {
             _db.Washers.Add(washer);
-            await _db.SaveChangesAsync();
-            return Ok(await _db.Washers.ToListAsync());
+            _db.SaveChanges();
+            return CreatedAtAction(nameof(GetWasherById), new { id = washer.Id }, washer);
         }
 
 
 
         //Method that updates a washer based on the id in the database
-        [HttpPut]
-        public async Task<ActionResult<List<Washer>>> UpdateWasher(Washer washer)
+        [HttpPut("{id}")]
+        public IActionResult UpdateWasher(int id, [FromBody] Washer washer)
         {
-            var washerFromDb = await _db.Washers.FindAsync(washer.Id);
-            if (washerFromDb == null)
-                return BadRequest("Washer not found");
+            if (id != washer.Id)
+            {
+                return NotFound();
+            }
 
-            washerFromDb.FirstName = washer.FirstName;
-            washerFromDb.LastName = washer.FirstName;
-            washerFromDb.Available = washer.Available;
+            _db.Washers.Update(washer);
+            _db.SaveChanges();
 
-            await _db.SaveChangesAsync();
-            return Ok(await _db.Washers.ToListAsync());
+            return CreatedAtAction(nameof(GetWasherById), new { id = washer.Id }, washer);
         }
 
 
 
         //Method that deletes a washer based on the id from the database
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<Washer>>> DeleteWasher(int id)
+        public IActionResult DeleteWasher(int id)
         {
-            var washerFromDb = await _db.Washers.FindAsync(id);
+            var washerFromDb = _db.Washers.FirstOrDefault(x => x.Id == id);
             if (washerFromDb == null)
-                return BadRequest("Washer not found");
-
+            {
+                return NotFound();
+            }
+                
             _db.Washers.Remove(washerFromDb);
             _db.SaveChanges();
+
             return Ok(washerFromDb);
         }
     }
